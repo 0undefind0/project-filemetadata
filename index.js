@@ -4,7 +4,6 @@ require('dotenv').config();
 const path = require('path');
 const fs = require('fs');
 const multer = require("multer");
-const { log } = require('console');
 
 
 var app = express();
