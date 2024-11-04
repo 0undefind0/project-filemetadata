@@ -1,8 +1,11 @@
-var express = require('express');
-var cors = require('cors');
+const express = require('express');
+const cors = require('cors');
+const multer = require('multer')
 require('dotenv').config()
 
-var app = express();
+const app = express();
+
+const upload = multer({dest: 'uploads/'})
 
 app.use(cors());
 app.use('/public', express.static(process.cwd() + '/public'));
@@ -11,6 +14,27 @@ app.get('/', function (req, res) {
   res.sendFile(process.cwd() + '/views/index.html');
 });
 
+app.post('/api/fileanalyse', upload.single('upfile'), (req, res) => {
+  
+  const file = req.file;
+
+  if (!file) {
+    throw new Error('No file uploaded');
+  }
+  
+  res.json({
+    name: file.originalname,
+    type: file.mimetype,
+    size: file.size
+  })
+})
+
+
+// Error-handling Middleware
+app.use((err, req, res, next) => {
+  console.error('Error: ', err.stack);
+  res.status(500).json({error: err.message});
+})
 
 
 
